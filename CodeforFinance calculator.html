@@ -1,0 +1,1111 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Fineit Adv — Personal Finance Calculator</title>
+
+<style>
+:root {
+    --background: #090b0a;
+    --card: rgba(14, 18, 16, 0.82);
+    --border: rgba(255, 255, 255, 0.13);
+    --text: #f5f3ed;
+    --muted: #b0b1a9;
+    --accent: #cbd9bb;
+    --gold: #d9c49b;
+}
+
+* {
+    box-sizing: border-box;
+}
+
+html {
+    scroll-behavior: smooth;
+}
+
+body {
+    margin: 0;
+    min-height: 100vh;
+    color: var(--text);
+    background: var(--background);
+    font-family: Arial, Helvetica, sans-serif;
+}
+
+/* VIDEO BACKGROUND */
+
+.video-background {
+    position: fixed;
+    inset: 0;
+    z-index: -2;
+    overflow: hidden;
+    background: #090b0a;
+}
+
+.video-background video {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    inset: 0;
+    object-fit: cover;
+    object-position: center;
+}
+
+/* Overlay keeps text readable */
+
+.video-overlay {
+    position: fixed;
+    inset: 0;
+    z-index: -1;
+    pointer-events: none;
+
+    background:
+        linear-gradient(
+            180deg,
+            rgba(5, 8, 7, 0.62),
+            rgba(5, 8, 7, 0.82)
+        );
+}
+
+/* HEADER */
+
+header {
+    max-width: 1200px;
+    margin: auto;
+    padding: 26px 24px;
+
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 20px;
+
+    border-bottom: 1px solid var(--border);
+}
+
+.brand {
+    font-size: 24px;
+    font-weight: 700;
+    letter-spacing: -1px;
+}
+
+.brand span {
+    color: var(--accent);
+}
+
+.tagline {
+    color: var(--muted);
+    font-size: 11px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+}
+
+/* MAIN CONTENT */
+
+main {
+    max-width: 1200px;
+    margin: auto;
+    padding: 65px 24px 75px;
+}
+
+.hero {
+    max-width: 760px;
+    margin-bottom: 48px;
+}
+
+.eyebrow {
+    color: var(--gold);
+    font-size: 12px;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    margin-bottom: 20px;
+}
+
+h1 {
+    font-size: clamp(40px, 6vw, 70px);
+    line-height: 1.06;
+    letter-spacing: -3px;
+    font-weight: 500;
+    margin: 0 0 22px;
+}
+
+h1 em {
+    color: var(--accent);
+    font-family: Georgia, serif;
+    font-weight: 400;
+}
+
+.hero p {
+    color: #c4c5be;
+    font-size: 15px;
+    line-height: 1.9;
+    max-width: 590px;
+}
+
+.section-heading {
+    color: var(--muted);
+    font-size: 12px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    margin: 0 0 20px;
+}
+
+/* DASHBOARD */
+
+.dashboard {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 17px;
+    margin-bottom: 55px;
+}
+
+.stat-card,
+.calculator-card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 17px;
+
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+}
+
+.stat-card {
+    padding: 25px;
+}
+
+.stat-label {
+    color: var(--muted);
+    font-size: 13px;
+    margin-bottom: 15px;
+}
+
+.stat-value {
+    font-size: clamp(22px, 3vw, 30px);
+    letter-spacing: -1px;
+    overflow-wrap: anywhere;
+}
+
+.stat-note {
+    color: var(--accent);
+    font-size: 12px;
+    margin-top: 12px;
+}
+
+/* CALCULATOR CARDS */
+
+.calculators {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 20px;
+}
+
+.calculator-card {
+    padding: 27px;
+    min-width: 0;
+}
+
+.card-top {
+    margin-bottom: 26px;
+}
+
+.card-number {
+    color: var(--gold);
+    font-size: 11px;
+    letter-spacing: 2px;
+}
+
+h2 {
+    font-size: 23px;
+    font-weight: 500;
+    letter-spacing: -0.5px;
+    margin: 10px 0;
+}
+
+.card-description {
+    color: var(--muted);
+    font-size: 13px;
+    line-height: 1.7;
+}
+
+/* INPUTS */
+
+.field-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 17px;
+}
+
+.field {
+    min-width: 0;
+}
+
+label {
+    display: block;
+    color: #d0d0c9;
+    font-size: 12px;
+    line-height: 1.5;
+    margin-bottom: 9px;
+}
+
+input {
+    display: block;
+    width: 100%;
+    min-width: 0;
+
+    padding: 14px 12px;
+
+    background: rgba(255, 255, 255, 0.055);
+    border: 1px solid var(--border);
+    border-radius: 9px;
+
+    color: white;
+    font-size: 15px;
+    outline: none;
+
+    transition: border-color 0.2s;
+}
+
+input:focus {
+    border-color: var(--accent);
+}
+
+input::placeholder {
+    color: #777970;
+}
+
+.calculate-btn {
+    width: 100%;
+    margin-top: 22px;
+    padding: 15px;
+
+    border: none;
+    border-radius: 9px;
+
+    background: var(--accent);
+    color: #11150f;
+
+    font-size: 14px;
+    font-weight: 700;
+    cursor: pointer;
+
+    transition: background 0.2s, transform 0.2s;
+}
+
+.calculate-btn:hover {
+    background: #e0e9d5;
+    transform: translateY(-1px);
+}
+
+.calculate-btn:focus-visible {
+    outline: 2px solid white;
+    outline-offset: 3px;
+}
+
+/* RESULTS */
+
+.result {
+    display: none;
+    margin-top: 22px;
+    padding: 20px;
+
+    border: 1px solid rgba(203, 217, 187, 0.25);
+    border-radius: 11px;
+
+    background: rgba(203, 217, 187, 0.07);
+    overflow-wrap: anywhere;
+}
+
+.result.show {
+    display: block;
+}
+
+.result-label {
+    color: var(--muted);
+    font-size: 12px;
+    margin-bottom: 9px;
+}
+
+.result-value {
+    color: var(--text);
+    font-size: clamp(23px, 4vw, 30px);
+    letter-spacing: -0.8px;
+    overflow-wrap: anywhere;
+}
+
+.result-detail {
+    color: var(--accent);
+    font-size: 12px;
+    line-height: 1.8;
+    margin-top: 10px;
+    overflow-wrap: anywhere;
+}
+
+.error {
+    color: #ffb7ac;
+    font-size: 13px;
+    line-height: 1.7;
+}
+
+/* FOOTER */
+
+footer {
+    max-width: 1200px;
+    margin: auto;
+    padding: 25px 24px 35px;
+
+    border-top: 1px solid var(--border);
+
+    display: flex;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 15px;
+
+    color: var(--muted);
+    font-size: 12px;
+}
+
+/* MOBILE */
+
+@media (max-width: 760px) {
+    header {
+        padding: 21px 18px;
+    }
+
+    .brand {
+        font-size: 21px;
+    }
+
+    .tagline {
+        max-width: 150px;
+        text-align: right;
+        font-size: 9px;
+        line-height: 1.6;
+        letter-spacing: 1px;
+    }
+
+    main {
+        padding: 45px 18px 55px;
+    }
+
+    h1 {
+        letter-spacing: -1.8px;
+    }
+
+    .dashboard {
+        grid-template-columns: 1fr;
+        gap: 12px;
+        margin-bottom: 42px;
+    }
+
+    .stat-card {
+        padding: 21px;
+    }
+
+    .calculators {
+        grid-template-columns: 1fr;
+        gap: 16px;
+    }
+
+    .calculator-card {
+        padding: 22px;
+    }
+
+    footer {
+        padding-left: 18px;
+        padding-right: 18px;
+    }
+}
+
+@media (max-width: 380px) {
+    .field-grid {
+        grid-template-columns: 1fr;
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    html {
+        scroll-behavior: auto;
+    }
+
+    *,
+    *::before,
+    *::after {
+        transition-duration: 0.01ms !important;
+    }
+}
+</style>
+</head>
+
+<body>
+
+<!-- Background video: muted, autoplay, continuous loop -->
+
+<div class="video-background" aria-hidden="true">
+    <video
+        id="backgroundVideo"
+        autoplay
+        muted
+        loop
+        playsinline
+        preload="auto"
+        aria-hidden="true">
+
+        <source src="background.mp4" type="video/mp4">
+
+    </video>
+</div>
+
+<div class="video-overlay" aria-hidden="true"></div>
+
+<header>
+    <div class="brand">Fineit <span>Adv.</span></div>
+    <div class="tagline">A clearer view of your finances</div>
+</header>
+
+<main>
+
+    <section class="hero">
+        <div class="eyebrow">Personal Finance · Simplified</div>
+
+        <h1>
+            Make your money<br>
+            work <em>for you.</em>
+        </h1>
+
+        <p>
+            Better financial decisions begin with understanding your numbers.
+            Explore your investments, estimate your returns, and plan your
+            financial future with simple, practical calculators.
+        </p>
+    </section>
+
+    <h2 class="section-heading">Your financial overview</h2>
+
+    <section class="dashboard">
+
+        <div class="stat-card">
+            <div class="stat-label">Investment growth</div>
+            <div class="stat-value" id="growthStat">—</div>
+            <div class="stat-note">Explore compound interest</div>
+        </div>
+
+        <div class="stat-card">
+            <div class="stat-label">Monthly investing</div>
+            <div class="stat-value" id="sipStat">—</div>
+            <div class="stat-note">Plan your SIP contributions</div>
+        </div>
+
+        <div class="stat-card">
+            <div class="stat-label">Savings insight</div>
+            <div class="stat-value">Start small.</div>
+            <div class="stat-note">Build consistent habits</div>
+        </div>
+
+    </section>
+
+    <h2 class="section-heading">Financial calculators</h2>
+
+    <section class="calculators">
+
+        <!-- 1. COMPOUND INTEREST -->
+
+        <article class="calculator-card">
+
+            <div class="card-top">
+                <div class="card-number">01 / INVEST</div>
+                <h2>Compound Interest</h2>
+                <div class="card-description">
+                    Discover how your money can grow over time.
+                </div>
+            </div>
+
+            <form data-calculator="compound">
+
+                <div class="field-grid">
+
+                    <div class="field">
+                        <label for="ciPrincipal">
+                            Initial amount (₹)
+                        </label>
+
+                        <input
+                            id="ciPrincipal"
+                            name="principal"
+                            type="number"
+                            min="0"
+                            max="10000000000"
+                            step="any"
+                            placeholder="10000"
+                            required>
+                    </div>
+
+                    <div class="field">
+                        <label for="ciRate">Annual rate (%)</label>
+
+                        <input
+                            id="ciRate"
+                            name="rate"
+                            type="number"
+                            min="0"
+                            step="any"
+                            placeholder="8"
+                            required>
+                    </div>
+
+                    <div class="field">
+                        <label for="ciYears">Duration (years)</label>
+
+                        <input
+                            id="ciYears"
+                            name="years"
+                            type="number"
+                            min="0"
+                            step="any"
+                            placeholder="5"
+                            required>
+                    </div>
+
+                </div>
+
+                <button class="calculate-btn" type="submit">
+                    Calculate growth
+                </button>
+
+                <div class="result" aria-live="polite"></div>
+
+            </form>
+        </article>
+
+        <!-- 2. SIP CALCULATOR -->
+
+        <article class="calculator-card">
+
+            <div class="card-top">
+                <div class="card-number">02 / BUILD</div>
+                <h2>SIP Calculator</h2>
+                <div class="card-description">
+                    Estimate the potential value of monthly investing.
+                </div>
+            </div>
+
+            <form data-calculator="sip">
+
+                <div class="field-grid">
+
+                    <div class="field">
+                        <label for="sipMonthly">
+                            Monthly investment (₹)
+                        </label>
+
+                        <input
+                            id="sipMonthly"
+                            name="monthly"
+                            type="number"
+                            min="0"
+                            max="10000000000"
+                            step="any"
+                            placeholder="2000"
+                            required>
+                    </div>
+
+                    <div class="field">
+                        <label for="sipRate">
+                            Expected annual return (%)
+                        </label>
+
+                        <input
+                            id="sipRate"
+                            name="rate"
+                            type="number"
+                            min="0"
+                            step="any"
+                            placeholder="12"
+                            required>
+                    </div>
+
+                    <div class="field">
+                        <label for="sipYears">Duration (years)</label>
+
+                        <input
+                            id="sipYears"
+                            name="years"
+                            type="number"
+                            min="0"
+                            step="any"
+                            placeholder="10"
+                            required>
+                    </div>
+
+                </div>
+
+                <button class="calculate-btn" type="submit">
+                    Calculate SIP
+                </button>
+
+                <div class="result" aria-live="polite"></div>
+
+            </form>
+        </article>
+
+        <!-- 3. PROFIT AND LOSS -->
+
+        <article class="calculator-card">
+
+            <div class="card-top">
+                <div class="card-number">03 / ANALYSE</div>
+                <h2>Profit &amp; Loss</h2>
+                <div class="card-description">
+                    Compare your cost price with your selling price.
+                </div>
+            </div>
+
+            <form data-calculator="profit">
+
+                <div class="field-grid">
+
+                    <div class="field">
+                        <label for="costPrice">Cost price (₹)</label>
+
+                        <input
+                            id="costPrice"
+                            name="cost"
+                            type="number"
+                            min="0"
+                            max="10000000000"
+                            step="any"
+                            placeholder="1000"
+                            required>
+                    </div>
+
+                    <div class="field">
+                        <label for="sellingPrice">Selling price (₹)</label>
+
+                        <input
+                            id="sellingPrice"
+                            name="selling"
+                            type="number"
+                            min="0"
+                            max="10000000000"
+                            step="any"
+                            placeholder="1250"
+                            required>
+                    </div>
+
+                </div>
+
+                <button class="calculate-btn" type="submit">
+                    Calculate result
+                </button>
+
+                <div class="result" aria-live="polite"></div>
+
+            </form>
+        </article>
+
+        <!-- 4. DISCOUNT CALCULATOR -->
+
+        <article class="calculator-card">
+
+            <div class="card-top">
+                <div class="card-number">04 / SAVE</div>
+                <h2>Discount Calculator</h2>
+                <div class="card-description">
+                    Find the amount you save and the final price.
+                </div>
+            </div>
+
+            <form data-calculator="discount">
+
+                <div class="field-grid">
+
+                    <div class="field">
+                        <label for="originalPrice">
+                            Original price (₹)
+                        </label>
+
+                        <input
+                            id="originalPrice"
+                            name="price"
+                            type="number"
+                            min="0"
+                            max="10000000000"
+                            step="any"
+                            placeholder="2500"
+                            required>
+                    </div>
+
+                    <div class="field">
+                        <label for="discountRate">Discount (%)</label>
+
+                        <input
+                            id="discountRate"
+                            name="discount"
+                            type="number"
+                            min="0"
+                            step="any"
+                            placeholder="15"
+                            required>
+                    </div>
+
+                </div>
+
+                <button class="calculate-btn" type="submit">
+                    Calculate savings
+                </button>
+
+                <div class="result" aria-live="polite"></div>
+
+            </form>
+        </article>
+
+    </section>
+
+</main>
+
+<footer>
+    <div>© <span id="year"></span> Fineit Adv.</div>
+    <div>Plan thoughtfully. Grow consistently.</div>
+</footer>
+
+<script>
+"use strict";
+
+const MAX_AMOUNT = 10000000000;
+
+const money = new Intl.NumberFormat("en-IN", {
+    style: "currency",
+    currency: "INR",
+    maximumFractionDigits: 2
+});
+
+document.getElementById("year").textContent =
+    new Date().getFullYear();
+
+
+/* FORMAT LARGE FINITE RESULTS */
+
+function formatMoney(value) {
+    if (!Number.isFinite(value)) {
+        return "Result exceeds JavaScript's numeric range";
+    }
+
+    return money.format(value);
+}
+
+
+/* DISPLAY CALCULATION RESULTS */
+
+function showResult(form, title, value, details = []) {
+    const box = form.querySelector(".result");
+
+    box.classList.add("show");
+    box.replaceChildren();
+
+    if (!Number.isFinite(value) ||
+        details.some(item =>
+            typeof item.value === "number" &&
+            !Number.isFinite(item.value)
+        )) {
+
+        const error = document.createElement("div");
+        error.className = "error";
+        error.textContent =
+            "This calculation exceeds JavaScript's numeric range. Try a lower rate or shorter duration.";
+
+        box.appendChild(error);
+        return;
+    }
+
+    const label = document.createElement("div");
+    label.className = "result-label";
+    label.textContent = title;
+
+    const amount = document.createElement("div");
+    amount.className = "result-value";
+    amount.textContent = formatMoney(value);
+
+    box.append(label, amount);
+
+    if (details.length > 0) {
+        const detail = document.createElement("div");
+        detail.className = "result-detail";
+
+        detail.textContent = details
+            .map(item => item.text)
+            .join(" · ");
+
+        box.appendChild(detail);
+    }
+}
+
+
+/* READ AND VALIDATE INPUTS */
+
+function getValues(form, names) {
+    const values = {};
+
+    for (const name of names) {
+        const input = form.elements.namedItem(name);
+        const value = input.valueAsNumber;
+
+        if (
+            input.value.trim() === "" ||
+            !Number.isFinite(value) ||
+            value < 0
+        ) {
+            throw new Error(
+                "Please enter a valid non-negative number in every field."
+            );
+        }
+
+        if (
+            input.max !== "" &&
+            value > Number(input.max)
+        ) {
+            throw new Error(
+                "The maximum allowed amount is ₹10,000,000,000."
+            );
+        }
+
+        values[name] = value;
+    }
+
+    return values;
+}
+
+
+/* CALCULATOR FORM HANDLERS */
+
+document.querySelectorAll("form[data-calculator]")
+    .forEach(form => {
+
+        form.addEventListener("submit", function(event) {
+            event.preventDefault();
+
+            const box = form.querySelector(".result");
+            box.classList.remove("show");
+
+            try {
+                const type = form.dataset.calculator;
+
+                /* COMPOUND INTEREST */
+
+                if (type === "compound") {
+                    const v = getValues(form, [
+                        "principal",
+                        "rate",
+                        "years"
+                    ]);
+
+                    const total = v.principal *
+                        Math.pow(
+                            1 + v.rate / 100,
+                            v.years
+                        );
+
+                    const interest = total - v.principal;
+
+                    showResult(
+                        form,
+                        "Estimated future value",
+                        total,
+                        [
+                            {
+                                text:
+                                    "Initial investment: " +
+                                    formatMoney(v.principal)
+                            },
+                            {
+                                text:
+                                    "Estimated interest: " +
+                                    formatMoney(interest)
+                            }
+                        ]
+                    );
+
+                    if (Number.isFinite(total)) {
+                        document.getElementById("growthStat")
+                            .textContent = formatMoney(total);
+                    }
+                }
+
+                /* SIP CALCULATOR */
+
+                if (type === "sip") {
+                    const v = getValues(form, [
+                        "monthly",
+                        "rate",
+                        "years"
+                    ]);
+
+                    const months = Math.round(v.years * 12);
+
+                    if (!Number.isSafeInteger(months)) {
+                        throw new Error(
+                            "The duration is too large to calculate reliably."
+                        );
+                    }
+
+                    const invested = v.monthly * months;
+
+                    const monthlyRate =
+                        Math.pow(
+                            1 + v.rate / 100,
+                            1 / 12
+                        ) - 1;
+
+                    let total;
+
+                    if (months === 0 || v.monthly === 0) {
+                        total = 0;
+                    } else if (monthlyRate === 0) {
+                        total = invested;
+                    } else {
+                        total = v.monthly *
+                            (
+                                (Math.pow(
+                                    1 + monthlyRate,
+                                    months
+                                ) - 1) / monthlyRate
+                            ) *
+                            (1 + monthlyRate);
+                    }
+
+                    showResult(
+                        form,
+                        "Estimated SIP value",
+                        total,
+                        [
+                            {
+                                text:
+                                    "Total invested: " +
+                                    formatMoney(invested)
+                            },
+                            {
+                                text:
+                                    "Estimated gain: " +
+                                    formatMoney(total - invested)
+                            }
+                        ]
+                    );
+
+                    document.getElementById("sipStat")
+                        .textContent =
+                        formatMoney(v.monthly) + "/mo";
+                }
+
+                /* PROFIT AND LOSS */
+
+                if (type === "profit") {
+                    const v = getValues(form, [
+                        "cost",
+                        "selling"
+                    ]);
+
+                    if (v.cost === 0) {
+                        throw new Error(
+                            "Cost price must be greater than zero."
+                        );
+                    }
+
+                    const difference = v.selling - v.cost;
+
+                    const percentage =
+                        difference / v.cost * 100;
+
+                    const isProfit = difference >= 0;
+
+                    showResult(
+                        form,
+                        isProfit ? "Profit" : "Loss",
+                        Math.abs(difference),
+                        [
+                            {
+                                text:
+                                    Math.abs(percentage).toFixed(2) +
+                                    "% " +
+                                    (isProfit ? "profit" : "loss")
+                            }
+                        ]
+                    );
+                }
+
+                /* DISCOUNT CALCULATOR */
+
+                if (type === "discount") {
+                    const v = getValues(form, [
+                        "price",
+                        "discount"
+                    ]);
+
+                    const savings =
+                        v.price * v.discount / 100;
+
+                    const finalPrice =
+                        v.price - savings;
+
+                    showResult(
+                        form,
+                        "Final price",
+                        finalPrice,
+                        [
+                            {
+                                text:
+                                    "You save: " +
+                                    formatMoney(savings)
+                            },
+                            {
+                                text:
+                                    "Discount: " +
+                                    v.discount + "%"
+                            }
+                        ]
+                    );
+                }
+
+            } catch (error) {
+                box.classList.add("show");
+
+                const message = document.createElement("div");
+                message.className = "error";
+                message.textContent = error.message;
+
+                box.replaceChildren(message);
+            }
+        });
+    });
+
+
+/* MUTED, CONTINUOUS BACKGROUND VIDEO */
+
+const backgroundVideo =
+    document.getElementById("backgroundVideo");
+
+backgroundVideo.muted = true;
+backgroundVideo.defaultMuted = true;
+backgroundVideo.loop = true;
+
+function startBackgroundVideo() {
+    backgroundVideo.muted = true;
+
+    const attempt = backgroundVideo.play();
+
+    if (attempt && typeof attempt.catch === "function") {
+        attempt.catch(() => {
+            /* Browser may require interaction before playback. */
+        });
+    }
+}
+
+backgroundVideo.addEventListener(
+    "canplay",
+    startBackgroundVideo
+);
+
+startBackgroundVideo();
+
+</script>
+
+</body>
+
